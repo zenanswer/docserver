@@ -1,0 +1,25 @@
+[package]
+name = "docserver"
+version = "0.1.0"
+edition = "2021"
+description = "本地文档服务器：目录浏览、Markdown 渲染、图片查看器、HTML 原样服务"
+license = "MIT"
+repository = "https://github.com/zenanswer/docserver"
+readme = "README.md"
+
+[dependencies]
+anyhow = "1"
+axum = "0.8"
+clap = { version = "4", features = ["derive"] }
+local-ip-address = "0.6"
+mime_guess = "2"
+percent-encoding = "2"
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+time = { version = "0.3", features = ["formatting", "local-offset", "macros"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "net"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+codegen-units = 1
