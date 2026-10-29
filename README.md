@@ -13,8 +13,28 @@
 ```bash
 cd ~/dev/docserver
 cargo build --release
-install -m755 target/release/docserver ~/.local/bin/docserver
+install -m755 target/x86_64-unknown-linux-musl/release/docserver ~/.local/bin/docserver
 ```
+
+`.cargo/config.toml` 把默认目标设成 `x86_64-unknown-linux-musl`，所以 `cargo build --release`
+直接产出**静态链接**的二进制（`ldd` 显示 `not a dynamic executable`），不依赖 glibc，
+也不需要目标机器装 musl。想编动态链接版：
+
+```bash
+cargo build --release --target x86_64-unknown-linux-gnu
+```
+
+发布版由 `.github/workflows/release.yml` 在打 `v*` tag 时自动构建，
+产出 `docserver-x86_64-unknown-linux-musl` 和 `docserver-aarch64-unknown-linux-musl`。
+
+## 兼容性
+
+| 项 | 范围 |
+|---|---|
+| libc | 不需要。静态链接 musl，不读目标机的 glibc 版本 |
+| 内核 | Linux ≥ 3.2（Rust std 下限；2014 年后的发行版都满足） |
+| 架构 | x86_64 与 aarch64（各自独立二进制，不能混用） |
+| 运行时 | 单文件，无其他依赖
 
 ## 用法
 
